@@ -10,6 +10,11 @@ public class BoardView extends JPanel implements Observer {
     private MineModel model;
     private MineButton[][] buttons;
 
+    /**
+     * Creates a BoardView of the given MineModel.
+     *
+     * @param model The model to view
+     */
     public BoardView(MineModel model) {
         GridLayout layout = new GridLayout(model.getSize(), model.getSize());
         layout.setHgap(2);
@@ -27,10 +32,23 @@ public class BoardView extends JPanel implements Observer {
         update();
     }
 
+    /**
+     * This method is called whenever
+     * the observable object is changed.
+     *
+     * @param o The observable object
+     * @param arg An argument passed to the
+     *            notifyObservers method
+     */
     public void update(Observable o, Object arg) {
         update();
     }
 
+    /**
+     * Updates the BoardView.
+     * Sets each MineButton to be
+     * the correct type.
+     */
     private void update() {
         boolean revealMines = model.hasRevealedMine();
         for(int x = 0; x < model.getSize(); x++) {
@@ -47,6 +65,10 @@ public class BoardView extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Represents a single (clickable) spot
+     * in the minesweeper grid.
+     */
     private static class MineButton extends JComponent {
         private static final Rectangle
             FILL_RECT = new Rectangle(0, 0, 20, 20);
@@ -61,6 +83,14 @@ public class BoardView extends JPanel implements Observer {
         private int x, y;
         private MineModel model;
 
+        /**
+         * Creates a MineButton with
+         * the given information.
+         *
+         * @param model The game's model
+         * @param x The x co-ord of the button
+         * @param y The y co-ord of the button
+         */
         public MineButton(MineModel model, int x, int y) {
             this.model = model;
             this.x = x;
@@ -70,6 +100,10 @@ public class BoardView extends JPanel implements Observer {
             addMouseListener();
         }
 
+        /**
+         * Sets the MineButton to
+         * visually represent a mine.
+         */
         public void setMine() {
             if(MINE_PAINT == null) {
                 MINE_PAINT = loadPaint("Mine");
@@ -77,6 +111,14 @@ public class BoardView extends JPanel implements Observer {
             paint = MINE_PAINT;
         }
 
+        /**
+         * Sets the MineButton to
+         * visually represent either
+         * a flag or a 'normal' spot.
+         *
+         * @param flag True iff it should
+         *             represent a flag
+         */
         public void setFlag(boolean flag) {
             if(flag) {
                 if(FLAG_PAINT == null) {
@@ -91,6 +133,16 @@ public class BoardView extends JPanel implements Observer {
             }
         }
 
+        /**
+         * Sets the MineButton to
+         * visually represent a number.
+         *
+         * @param n A number between 0
+         *          and 8 inclusive
+         *
+         * @throws IllegalArgumentException
+         *         if n isn't a valid number
+         */
         public void setNumber(int n) {
             if(n < 0 || n > 8) {
                 throw new IllegalArgumentException(
@@ -102,12 +154,31 @@ public class BoardView extends JPanel implements Observer {
             paint = NUMBER_PAINTS[n];
         }
 
+        /**
+         * Paints the MineButton onto the
+         * given Graphics object.
+         *
+         * @param g The Graphics object
+         *          to paint onto
+         */
         public void paintComponent(Graphics g) {
             Graphics2D g2D = (Graphics2D)g;
             g2D.setPaint(paint);
             g2D.fill(FILL_RECT);
         }
 
+        /**
+         * Loads the given image into a Paint
+         * (specifically a TexturePaint) and returns it.
+         * The image name shouldn't have an extension.
+         *
+         * @param imageFile The image to load
+         *
+         * @return The image loaded into a Paint
+         *
+         * @throws RuntimeException
+         *         if loading the image failed
+         */
         private Paint loadPaint(String imageFile) {
             imageFile = "images/" + imageFile + ".png";
             try {
@@ -125,12 +196,19 @@ public class BoardView extends JPanel implements Observer {
             }
         }
 
+        /**
+         * Adds a mouse listener to this
+         * MineButton, which makes it clickable.
+         */
         private void addMouseListener() {
             addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
-                    if(!model.isRevealed(x, y) && !model.hasRevealedMine()) {
+                    if(!model.isRevealed(x, y)
+                    && !model.hasRevealedMine()) {
                         if(e.getButton() == MouseEvent.BUTTON1) {
-                            model.reveal(x, y);
+                            if(!model.isFlag(x, y)) {
+                                model.reveal(x, y);
+                            }
                         } else if(e.getButton() == MouseEvent.BUTTON3) {
                             model.toggleFlag(x, y);
                         }
