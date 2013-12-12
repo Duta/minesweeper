@@ -7,9 +7,12 @@ public class MinesweeperGUI {
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Minesweeper");
-        MineModel model = new MineModel(new Minesweeper(16, 40));
+        MineModel model = new MineModel(new Minesweeper(10, 15));
+        ControlPanel controls = new ControlPanel(model);
         BoardView view = new BoardView(model);
+        model.addObserver(controls);
         model.addObserver(view);
+        frame.setJMenuBar(controls);
         frame.add(view);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
