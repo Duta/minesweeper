@@ -1,5 +1,10 @@
 import javax.swing.*;
 public class MinesweeperGUI {
+    /**
+     * The program's entry point.
+     *
+     * @param args The command-line arguments
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Minesweeper");
         MineModel model = new MineModel(new Minesweeper(16, 40));
