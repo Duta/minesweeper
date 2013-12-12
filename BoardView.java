@@ -97,7 +97,7 @@ public class BoardView extends JPanel implements Observer {
             this.y = y;
             setPreferredSize(new Dimension(20, 20));
             setFlag(false);
-            addMouseListener();
+            addMouseListener(new SquareListener(model, x, y));
         }
 
         /**
@@ -194,27 +194,6 @@ public class BoardView extends JPanel implements Observer {
                 throw new RuntimeException(
                     "Failed to load image \"" + imageFile + "\".");
             }
-        }
-
-        /**
-         * Adds a mouse listener to this
-         * MineButton, which makes it clickable.
-         */
-        private void addMouseListener() {
-            addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e) {
-                    if(!model.isRevealed(x, y)
-                    && !model.hasRevealedMine()) {
-                        if(e.getButton() == MouseEvent.BUTTON1) {
-                            if(!model.isFlag(x, y)) {
-                                model.reveal(x, y);
-                            }
-                        } else if(e.getButton() == MouseEvent.BUTTON3) {
-                            model.toggleFlag(x, y);
-                        }
-                    }
-                }
-            });
         }
     }
 }
