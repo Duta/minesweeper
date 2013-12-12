@@ -19,7 +19,34 @@ public class Minesweeper {
         }
         this.size = size;
         this.numMines = numMines;
-        generateRandomBoard();
+        reset();
+    }
+
+    /**
+     * Generates a new random board.
+     */
+    public void reset() {
+        int numSpots = size * size;
+        Random rgen = new Random();
+        // Create an empty board
+        board = new MineSpot[numSpots];
+        for(int i = 0; i < board.length; i++) {
+            board[i] = new MineSpot();
+        }
+        // Place the mines
+        for(int i = 0; i < numMines; i++) {
+            // Generate a random spot for the mine
+            int index = rgen.nextInt(numSpots);
+            // If there is a mine at the chosen
+            // spot, skip forwards to the first
+            // free location and put it there
+            while(board[index].isMine()) {
+                index++;
+                index %= numSpots;
+            }
+            // Place the mine
+            board[index].setMine(true);
+        }
     }
 
     /**
@@ -62,7 +89,7 @@ public class Minesweeper {
      * @param y The y co-ord
      *
      * @return true iff the spot at
-     *              x,y is a mine 
+     *              x,y is a mine
      */
     public boolean isMine(int x, int y) {
         return get(x, y).isMine();
@@ -76,7 +103,7 @@ public class Minesweeper {
      * @param y The y co-ord
      *
      * @return true iff the spot at
-     *              x,y is flagged 
+     *              x,y is flagged
      */
     public boolean isFlag(int x, int y) {
         return get(x, y).isFlag();
@@ -85,17 +112,28 @@ public class Minesweeper {
     /**
      * Returns true iff there exists
      * at least one revealed mine.
-     * 
+     *
      * @return true iff there exists at least
      *              one revealed mine
      */
     public boolean hasRevealedMine() {
-        for(int i = 0; i < board.length; i++) {
-            if(board[i].isRevealed() && board[i].isMine()) {
+        for(MineSpot spot : board) {
+            if(spot.isRevealed() && spot.isMine()) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Reveals all mines.
+     */
+    public void revealMines() {
+        for(MineSpot spot : board) {
+            if(spot.isMine()) {
+                spot.setRevealed(true);
+            }
+        }
     }
 
     /**
@@ -112,12 +150,14 @@ public class Minesweeper {
      * Reveals x,y. If x,y has 0 adjacent
      * mines, floods outwards, recursively
      * revealing until the edges are reached.
+     * If x,y is a mine, reveals all mines.
      *
      * @param x The x co-ord
      * @param y The y co-ord
      */
     public void reveal(int x, int y) {
         get(x, y).setRevealed(true);
+
         if(getNumAdjacentMines(x, y) == 0) {
             for(int i = x - 1; i <= x + 1; i++) {
                 for(int j = y - 1; j <= y + 1; j++) {
@@ -129,6 +169,10 @@ public class Minesweeper {
                     }
                 }
             }
+        }
+
+        if(get(x, y).isMine()) {
+            revealMines();
         }
     }
 
@@ -158,6 +202,15 @@ public class Minesweeper {
     }
 
     /**
+     * Sets the number of mines.
+     *
+     * @param numMines The number of mines
+     */
+    public void setNumMines(int numMines) {
+        this.numMines = numMines;
+    }
+
+    /**
      * Returns the MineSpot at x,y
      * from the board array.
      *
@@ -169,33 +222,6 @@ public class Minesweeper {
      */
     private MineSpot get(int x, int y) {
         return board[x + y*size];
-    }
-
-    /**
-     * Generates a random board array.
-     */
-    private void generateRandomBoard() {
-        int numSpots = size * size;
-        Random rgen = new Random();
-        // Create an empty board
-        board = new MineSpot[numSpots];
-        for(int i = 0; i < board.length; i++) {
-            board[i] = new MineSpot();
-        }
-        // Place the mines
-        for(int i = 0; i < numMines; i++) {
-            // Generate a random spot for the mine
-            int index = rgen.nextInt(numSpots);
-            // If there is a mine at the chosen
-            // spot, skip forwards to the first
-            // free location and put it there
-            while(board[index].isMine()) {
-                index++;
-                index %= numSpots;
-            }
-            // Place the mine
-            board[index].setMine(true);
-        }
     }
 
     /**

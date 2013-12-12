@@ -52,7 +52,7 @@ public class MineModel extends Observable {
      * @param y The y co-ord
      *
      * @return true iff the spot at
-     *              x,y is a mine 
+     *              x,y is a mine
      */
     public boolean isMine(int x, int y) {
         return minesweeper.isMine(x, y);
@@ -66,7 +66,7 @@ public class MineModel extends Observable {
      * @param y The y co-ord
      *
      * @return true iff the spot at
-     *              x,y is flagged 
+     *              x,y is flagged
      */
     public boolean isFlag(int x, int y) {
         return minesweeper.isFlag(x, y);
@@ -89,7 +89,7 @@ public class MineModel extends Observable {
     /**
      * Returns true iff there exists
      * at least one revealed mine.
-     * 
+     *
      * @return true iff there exists at least
      *              one revealed mine
      */
@@ -98,15 +98,34 @@ public class MineModel extends Observable {
     }
 
     /**
+     * Generates a new random board.
+     */
+    public void reset() {
+        minesweeper.reset();
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
      * Reveals x,y. If x,y has 0 adjacent
      * mines, floods outwards, recursively
      * revealing until the edges are reached.
+     * If x,y is a mine, reveals all mines.
      *
      * @param x The x co-ord
      * @param y The y co-ord
      */
     public void reveal(int x, int y) {
         minesweeper.reveal(x, y);
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Reveals all mines.
+     */
+    public void revealMines() {
+        minesweeper.revealMines();
         setChanged();
         notifyObservers();
     }
@@ -119,6 +138,17 @@ public class MineModel extends Observable {
      */
     public void toggleFlag(int x, int y) {
         minesweeper.toggleFlag(x, y);
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Sets the number of mines.
+     *
+     * @param numMines The number of mines
+     */
+    public void setNumMines(int numMines) {
+        minesweeper.setNumMines(numMines);
         setChanged();
         notifyObservers();
     }
