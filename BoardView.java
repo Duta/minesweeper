@@ -50,13 +50,14 @@ public class BoardView extends JPanel implements Observer {
      * the correct type.
      */
     private void update() {
-        boolean revealMines = model.hasRevealedMine();
         for(int x = 0; x < model.getSize(); x++) {
             for(int y = 0; y < model.getSize(); y++) {
-                if(model.isMine(x, y) && revealMines) {
-                    buttons[x][y].setMine();
-                } else if(model.isRevealed(x, y)) {
-                    buttons[x][y].setNumber(model.getNumAdjacentMines(x, y));
+                if(model.isRevealed(x, y)) {
+                    if(model.isMine(x, y)) {
+                        buttons[x][y].setMine();
+                    } else {
+                        buttons[x][y].setNumber(model.getNumAdjacentMines(x, y));
+                    }
                 } else {
                     buttons[x][y].setFlag(model.isFlag(x, y));
                 }
