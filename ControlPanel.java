@@ -1,9 +1,15 @@
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-public class ControlPanel extends JMenuBar implements Observer {
+public class ControlPanel extends JMenuBar {
     private MineModel model;
 
+    /**
+     * Creates a ControlPanel with
+     * the given MineModel.
+     *
+     * @param model The model to control
+     */
     public ControlPanel(MineModel model) {
         this.model = model;
 
@@ -65,10 +71,6 @@ public class ControlPanel extends JMenuBar implements Observer {
         difficulty.add(medium);
         difficulty.add(hard);
         add(difficulty);
-    }
-
-    public void update(Observable o, Object arg) {
-        // TODO
     }
 
     private void setNumMines(int numMines) {
